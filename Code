@@ -1,0 +1,114 @@
+#include <iostream>
+using namespace std;
+
+const int ROWS = 10;
+const int COLS = 4;
+const int BOGIES = 3;
+
+void displayWelcome() {
+    cout << "\n==========================================\n";
+    cout << "         WELCOME TO TRAIN BOOKING SYSTEM  \n";
+    cout << "==========================================\n";
+    cout << "Note: Seats marked with 'V' are Vacant and 'B' are Booked.\n";
+    cout << "Available Boggies: A, B, C\n\n";
+}
+
+void displaySeats(char seats[ROWS][COLS], char bogie) {
+    cout << "\nCurrent Seat Layout for Bogie " << bogie << ":\n\n";
+    cout << "       ";
+    for (int j = 0; j < COLS; j++) {
+        cout << "Col " << j + 1 << "   ";
+    }
+    cout << "\n";
+
+    for (int i = 0; i < ROWS; i++) {
+        cout << "Row ";
+        if (i + 1 < 10) cout << " ";
+        cout << i + 1 << "   ";
+        for (int j = 0; j < COLS; j++) {
+            cout << "  " << seats[i][j] << "   ";
+        }
+        cout << "\n";
+    }
+    cout << endl;
+}
+
+int main() {
+    char bogies[BOGIES] = {'A', 'B', 'C'};
+    char seats[BOGIES][ROWS][COLS];
+    char choice;
+
+    for (int b = 0; b < BOGIES; b++) {
+        for (int i = 0; i < ROWS; i++) {
+            for (int j = 0; j < COLS; j++) {
+                seats[b][i][j] = 'V';
+            }
+        }
+    }
+
+    displayWelcome();
+
+    do {
+        char selectedBogie;
+        cout << "Choose your Bogie (A, B, or C): ";
+        cin >> selectedBogie;
+
+        selectedBogie = toupper(selectedBogie);
+        int bogieIndex = -1;
+        for (int i = 0; i < BOGIES; i++) {
+            if (selectedBogie == bogies[i]) {
+                bogieIndex = i;
+                break;
+            }
+        }
+
+        if (bogieIndex == -1) {
+            cout << "\nInvalid bogie selection. Please try again.\n";
+            continue;
+        }
+
+        displaySeats(seats[bogieIndex], selectedBogie);
+
+        int row, col;
+        cout << "Please enter the seat you want to book in Bogie " << selectedBogie << ":\n";
+        cout << "  > Enter Row Number (1 - 10): ";
+        cin >> row;
+        cout << "  > Enter Column Number (1 - 4): ";
+        cin >> col;
+
+        row--;
+        col--;
+
+        if (row >= 0 && row < ROWS && col >= 0 && col < COLS) {
+            if (seats[bogieIndex][row][col] == 'V') {
+                seats[bogieIndex][row][col] = 'B';
+                cout << "\nSeat successfully booked at Row " << row + 1
+                     << ", Column " << col + 1 << " in Bogie " << selectedBogie << ".\n";
+            } else {
+                cout << "\nThat seat is already booked. Please choose another.\n";
+            }
+        } else {
+            cout << "\nInvalid seat selection. Please try again.\n";
+        }
+
+        cout << "\nDo you want to book another seat? (y/n): ";
+        cin >> choice;
+        cout << "\n------------------------------------------\n";
+
+    } while (choice == 'y' || choice == 'Y');
+
+    cout << "\nFinal Seat Layout for All Boggies:\n";
+    cout << "\n------------------------------------------\n";
+    for (int b = 0; b < BOGIES; b++) {
+        displaySeats(seats[b], bogies[b]);
+    }
+
+    cout << "==========================================\n";
+    cout << "       THANK YOU FOR BOOKING WITH US      \n";
+    cout << "==========================================\n";
+    cout << "Your train departs at: 5:00 PM (Today)\n";
+    cout << "Please arrive 30 minutes before departure.\n";
+    cout << "==========================================\n\n";
+    
+    return 0;
+}
